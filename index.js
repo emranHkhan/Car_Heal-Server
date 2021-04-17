@@ -20,7 +20,9 @@ client.connect(err => {
     const adminCollection = client.db("admindb").collection("admin");
     const orderCollection = client.db("ordersdb").collection("orders");
     const reviewsCollection = client.db("reviewsdb").collection("reviews");
+    
 
+    //add serivce from the backend by the admin
     app.post('/addService', (req, res) => {
         const newService = req.body;
         console.log(newService);
@@ -31,6 +33,7 @@ client.connect(err => {
             })
     })
 
+    //load all the serices in the manage service section
     app.get('/allservices', (req, res) => {
         serviceCollection.find({})
             .toArray((err, documents) => {
@@ -38,6 +41,7 @@ client.connect(err => {
             })
     })
 
+    //delete a sercie by its id from the manage service section
     app.delete('/delete/:id', (req, res) => {
         serviceCollection.deleteOne({ _id: ObjectId(req.params.id) })
             .then(result => {
@@ -45,6 +49,7 @@ client.connect(err => {
             })
     })
 
+    //creating new admin in the backend in makeadmin section
     app.post('/createadmin', (req, res) => {
         const adminInfo = req.body;
         console.log(adminInfo);
@@ -54,6 +59,7 @@ client.connect(err => {
             })
     })
 
+    //identify if a user is admin or not to in the login section and set the user's role
     app.post('/isAdmin', (req, res) => {
         const email = req.body.email;
         adminCollection.find({ email: email })
@@ -62,6 +68,7 @@ client.connect(err => {
             })
     })
 
+    //load all the orders made by the user in the ordersadmin secton 
     app.get('/orders', (req, res) => {
         orderCollection.find({})
             .toArray((err, documents) => {
@@ -69,6 +76,7 @@ client.connect(err => {
             })
     })
 
+    //update the status of client's order to show up in the client side from ordersadmin section
     app.patch('/update/:id', (req, res) => {
         console.log(req.body.status);
         orderCollection.updateOne({ _id: ObjectId(req.params.id) }, {
@@ -79,6 +87,7 @@ client.connect(err => {
             })
     })
 
+    //identify a user is admin or not to conditionally show the navlink in the navbar section
     app.get('/admin', (req, res) => {
         adminCollection.find({ email: req.query.email })
             .toArray((err, result) => {
@@ -86,6 +95,7 @@ client.connect(err => {
             })
     })
 
+    //load all the service in the home section to show it on the client side
     app.get('/serviceonhome', (req, res) => {
         serviceCollection.find({})
             .toArray((err, documents) => {
@@ -93,6 +103,7 @@ client.connect(err => {
             })
     })
 
+    //load the selected service from db and prepare it show on the book section
     app.get('/serviceonbook/:id', (req, res) => {
         console.log('id', req.params.id);
         serviceCollection.find({ _id: ObjectId(req.params.id) })
@@ -101,6 +112,7 @@ client.connect(err => {
             })
     })
 
+    //sending the payment information as well as the service info to the db from book section
     app.post('/addOrder', (req, res) => {
         console.log(req.body);
         const orderDetails = req.body;
@@ -110,6 +122,7 @@ client.connect(err => {
             })
     })
 
+    //load all the orders by the loggedin user and show it on the booklist section
     app.get('/allorders', (req, res) => {
         console.log(req.query.email);
         orderCollection.find({email: req.query.email})
@@ -118,6 +131,7 @@ client.connect(err => {
         })
     })
 
+    //add reviews by the user and store it on the db from clientreviews section
     app.post('/addreviews', (req, res) => {
         console.log(req.body);
         const review = req.body;
@@ -127,6 +141,7 @@ client.connect(err => {
         })
     })
 
+    //load all the reviews and show those on the home page(reviews section)
     app.get('/loadreviews', (req, res) => {
         reviewsCollection.find({})
         .toArray((err, documents) => {
